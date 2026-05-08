@@ -1,4 +1,19 @@
 #!/bin/bash
+add_task() {
+    echo -n "Enter task title: "
+    read title
+}
+view_tasks() {
+
+}
+mark_completed() {
+    echo -n "Enter Task ID to mark as completed: "
+    read id
+}
+delete_task() {
+    echo -n "Enter Task ID to delete: "
+    read id
+}
 
 while true; do
     echo "=== Bash To-Do ==="
