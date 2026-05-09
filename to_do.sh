@@ -37,6 +37,28 @@ validate_date() {
 add_task() {
     echo -n "Enter task title: "
     read title
+    if [[ -z "$title" ]]; then
+    echo "Error: Title cannot be empty!"
+    return
+    fi
+    while true; do
+        echo -n "Enter date (YYYY/MM/DD): "
+        read raw_input
+        
+        task_date=$(echo "$raw_input" | tr -d ' /-')
+        
+        if validate_date "$task_date"; then
+            break
+        fi
+        echo "Invalid format! Try again."
+    done
+    
+    echo "$task_date,$title,$task_date,Pending" >> "$DB_FILE"
+    
+    header=$(head -n 1 "$DB_FILE")
+    (echo "$header"; tail -n +2 "$DB_FILE" | sort -t',' -k1,1n) > temp.csv && mv temp.csv "$DB_FILE"
+    
+    echo "Task added and list sorted successfully!"
 }
 view_tasks() {
 
@@ -60,7 +82,7 @@ while true; do
     echo -n "Select option: "
     read choice
     case $choice in
-        1) Add_task ;;
+        1) add_task ;;
         2) view_tasks ;;
         3) mark_completed ;;
         4) delete_task ;;
