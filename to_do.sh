@@ -66,14 +66,20 @@ view_tasks() {
 mark_completed() {
     echo -n "Enter Task ID to mark as completed: "
     read id
+    if grep -q "^$id," "$DB_FILE"; then
+        sed -i "/^$id,/s/Pending/Completed/" "$DB_FILE"
+        echo "Task status updated to Completed!"
+    else
+        echo "Error: Task ID not found."
+    fi
 }
 delete_task() {
     echo -n "Enter Task ID to delete: "
     read id
     if grep -q "^$id," "$DB_FILE"; then
-    grep -v "^$id," "$DB_FILE" > temp.csv && mv temp.csv "$DB_FILE"
-        echo "Task deleted successfully!"
-        else
+        grep -v "^$id," "$DB_FILE" > temp.csv && mv temp.csv "$DB_FILE"
+            echo "Task deleted successfully!"
+    else
         echo "Error: Task ID not found."
     fi
 }
