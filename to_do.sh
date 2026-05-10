@@ -70,6 +70,12 @@ mark_completed() {
 delete_task() {
     echo -n "Enter Task ID to delete: "
     read id
+    if grep -q "^$id," "$DB_FILE"; then
+    grep -v "^$id," "$DB_FILE" > temp.csv && mv temp.csv "$DB_FILE"
+        echo "Task deleted successfully!"
+        else
+        echo "Error: Task ID not found."
+    fi
 }
 
 while true; do
