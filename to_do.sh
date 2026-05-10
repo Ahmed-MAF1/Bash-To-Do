@@ -61,7 +61,23 @@ add_task() {
     echo "Task added and list sorted successfully!"
 }
 view_tasks() {
+    echo "------------------------------------------------------------"
+    printf "%-12s %-20s %-12s %-10s\n" "ID" "Title" "Date" "Status"
+    echo "------------------------------------------------------------"
 
+    mapfile -t lines < <(tail -n +2 "$DB_FILE")
+    
+    for line in "${lines[@]}"; do
+        
+        id=$(echo "$line" | cut -d',' -f1)
+        title=$(echo "$line" | cut -d',' -f2)
+        tdate=$(echo "$line" | cut -d',' -f3)
+        status=$(echo "$line" | cut -d',' -f4)
+
+        formatted_date="${tdate:0:4}/${tdate:4:2}/${tdate:6:2}"
+
+        printf "%-12s %-20s %-12s %-10s\n" "$id" "$title" "$formatted_date" "$status"
+    done
 }
 mark_completed() {
     echo -n "Enter Task ID to mark as completed: "
@@ -78,7 +94,7 @@ delete_task() {
     read id
     if grep -q "^$id," "$DB_FILE"; then
         grep -v "^$id," "$DB_FILE" > temp.csv && mv temp.csv "$DB_FILE"
-            echo "Task deleted successfully!"
+        echo "Task deleted successfully!"
     else
         echo "Error: Task ID not found."
     fi
